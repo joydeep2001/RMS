@@ -1,48 +1,59 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const DBController = require("../utility/DBControl");
+
+const { doQuery } = DBController;
 
 const users = [];
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
     res.json(users);
 });
 
-router.post('/signup', async (req, res) => {
-    try{
+router.post("/signup", async (req, res) => {
+    const { emailid, password } = req.body;
+    const userid = Math.round(Math.random() * 10) * Date.now();
+    let hashedpass;
+    //creating password hash
+    try {
         const salt = await bcrypt.genSalt(10);
-        const hashedpass =await  bcrypt.hash(req.body.password, salt);
-        const user = {
-            id: req.body.id,
-            password: hashedpass
-        };
-        users.push(user);
-        res.status(201).json(users);
-    } catch(err) {
+        hashedpass = await bcrypt.hash(password, salt);
+       
+    } catch (err) {
         res.status(500).send();
         console.log(err);
     }
-    
+    //inserting data into userlogin table
+    try {
+        doQuery(
+            `INSERT INTO userlogin (userid, emailid, password) VALUES ('${userid}', '${emailid}', '${hashedpass}')`
+        );
+        res.status(201).send( `Verification email send to ${emailid}`);
+    } catch (err) {
+        console.log(err);
+        if (err.code === "ER_DUP_ENTRY") {
+            res.status(400).send("Email id already exists");
+            return;
+        }
+    }
 });
-router.post('/login',async (req, res) => {
-    
-    const user =  users.find(user => user.id === req.body.id);
+router.post("/login", async (req, res) => {
+    const user = users.find((user) => user.id === req.body.id);
     console.log(user);
-    if(!user) {
-        return res.status(400).send('User not found');
+    if (!user) {
+        return res.status(400).send("User not found");
     }
     try {
         let found = await bcrypt.compare(req.body.password, user.password);
-        if(found) {
+        if (found) {
             res.status(200).send("Login success");
         } else {
             res.status(400).send("Userid password does not match");
         }
-    
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         res.status(500).send();
     }
-
 });
 
 module.exports = router;
