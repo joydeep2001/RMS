@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config();
+
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 const mailOption = {
     from: 'RNS',
-    to: 'iimswagato@gmail.com',
+    to: 'pkb195929@gmail.com',
     subject: 'Hi its RMS..',
     text: 'randfom!!'
 };
