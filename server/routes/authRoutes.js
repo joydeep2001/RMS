@@ -18,24 +18,26 @@ router.post("/signup", async (req, res) => {
     try {
         const salt = await bcrypt.genSalt(10);
         hashedpass = await bcrypt.hash(password, salt);
-       
     } catch (err) {
         res.status(500).send();
         console.log(err);
     }
     //inserting data into userlogin table
-    try {
-        doQuery(
-            `INSERT INTO userlogin (userid, emailid, password) VALUES ('${userid}', '${emailid}', '${hashedpass}')`
-        );
-        res.status(201).send( `Verification email send to ${emailid}`);
-    } catch (err) {
-        console.log(err);
-        if (err.code === "ER_DUP_ENTRY") {
-            res.status(400).send("Email id already exists");
-            return;
-        }
-    }
+
+    doQuery(
+        `INSERT INTO userlogin (userid, emailid, password) VALUES ('${userid}', '${emailid}', '${hashedpass}')`
+    )
+        .then(() =>
+            res.status(201).send(`Verification email send to ${emailid}`)
+        )
+        .catch((err) => {
+            if (err.code === "ER_DUP_ENTRY") {
+                res.status(400).send("Email id already exists");
+                return;
+            } else res.status(400).send(err);
+            console.log(err.code);
+        });
+    
 });
 router.post("/login", async (req, res) => {
     const user = users.find((user) => user.id === req.body.id);

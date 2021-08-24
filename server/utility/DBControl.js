@@ -10,15 +10,28 @@ class DBControl {
 	});
 
 	static doQuery = (query) => {
-		this.#con.connect((err) => {
-			if (err) {
-				console.log("Error", err);
-				return;
-			}
+		return new Promise((resolve, reject) => {
+			// this.#con.connect((err) => {
+			// 	if (err) {
+			// 		reject(err);
+			// 		return;
+			// 	}
+			// 	this.#con.query(query, (err, result, fields) => {
+			// 		if (err) {
+			// 			reject(err);
+			// 			return;
+			// 		}
+			// 		resolve(result);
+			// 		console.log(result);
+			// 	});
+			// });
 			this.#con.query(query, (err, result, fields) => {
-				if (err) throw err;
-				console.log("Fields: ", fields);
-				console.log("Result: ", result);
+				if (err) {
+					reject(err);
+					return;
+				}
+				resolve(result);
+				console.log(result);
 			});
 		});
 	};
