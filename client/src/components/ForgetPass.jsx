@@ -12,18 +12,7 @@ import Container from "@material-ui/core/Container";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
-      <Link color="inherit" href="#">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,7 +32,28 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  navlink: {
+    color: "blue",
+    margin: "5px",
+    fontSize: "15px",
+    textDecoration: "none",
+  },
 }));
+
+
+function Copyright() {
+  const classes = useStyles();
+  return (
+    <Typography variant="body2" color="textSecondary" align="center">
+      {"Copyright © "}
+      <Link className={classes.navlink} to="/home">
+        RMS
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
 
 export default function Login() {
   const classes = useStyles();
@@ -58,7 +68,6 @@ export default function Login() {
 
   const initialValues = {
     email: "",
-    password: "",
   };
 
   return (
@@ -69,7 +78,7 @@ export default function Login() {
           <DraftsOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Verify Email Id
+          Forget Password
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -105,7 +114,7 @@ export default function Login() {
               color="primary"
               className={classes.submit}
             >
-              Verify
+              Send Reset Link
             </Button>
             
           </Form>
