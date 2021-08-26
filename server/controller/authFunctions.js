@@ -5,13 +5,14 @@ const {
 	generateInsertQuery,
 	generateJWT,
 	createHash,
+	generateUserId
 } = require("../utility/utils");
 const jwt = require("jsonwebtoken");
-const { VerifyEmailOpt } = require("../config/emailOptions");
+const { VerifyEmailOptions } = require("../config/emailOptions");
 
 async function signup(req, res) {
 	const { emailid, password } = req.body;
-	const userid = Math.round(Math.random() * 10) * Date.now();
+	const userid = generateUserId();
 	let hashedpass = await createHash(password);
 
 	let columnNames = ["userid", "emailid", "password"];
@@ -20,7 +21,7 @@ async function signup(req, res) {
 	doQuery(generateInsertQuery("userlogin", columnNames, values))
 		.then(async () => {
 			const accessToken = generateJWT(userid);
-			const mailOption = new VerifyEmailOpt(emaiid, accessToken);
+			const mailOption = new VerifyEmailOptions(emaiid, accessToken);
 			try {
 				let result = await sendEmail(mailOption);
 				res.status(200).send(`Verification email send to ${emailid}`);
