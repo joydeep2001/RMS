@@ -50,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Signup2() {
   const classes = useStyles();
 
   const onSubmit = (values) => {
     console.log(values);
-    axios.post('http://localhost:3001/auth/login', values)
+    axios.post('http://localhost:3001/auth/signup', values)
      .then(resp => console.log(resp))
      .catch(err => console.error(err));
   };
@@ -77,7 +77,7 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Signup
         </Typography>
         <Formik
           initialValues={initialValues}
@@ -127,10 +127,7 @@ export default function Login() {
                 );
               }}
             </Field>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            
             <Button
               type="submit"
               fullWidth
@@ -138,17 +135,12 @@ export default function Login() {
               color="primary"
               className={classes.submit}
             >
-              LogIn
+              Signup
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
                 <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Already have an account? Login ?"}
                 </Link>
               </Grid>
             </Grid>

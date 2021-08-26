@@ -37,7 +37,7 @@ router.post("/signup", async (req, res) => {
             };
             try {
                 sendEmail(mailOption);
-                res.status(201).send(`Verification email send to ${emailid}`);
+                res.status(200).send(`Verification email send to ${emailid}`);
             } catch(e) {
                 res.status(500).send('Pliz retry..');
             }
@@ -45,7 +45,8 @@ router.post("/signup", async (req, res) => {
         })
         .catch((err) => {
             if (err.code === "ER_DUP_ENTRY") {
-                res.status(400).send("Email id already exists");
+                res.status(401).send("Email id already exists");
+                console.log("Email id already exists");
                 return;
             } else res.status(400).send(err);
             console.log(err.code);
@@ -60,7 +61,10 @@ router.post("/login", async (req, res) => {
     if (!result) {
         return res.status(400).send("User not found");
     } 
-    //return res.status(200).send(result[0].userid);
+    if(result[0].activated == 0) {
+        return res.status(400).send('Please verify the email account..');
+    }
+    
     const hashedpass = result[0].password;
     try {
         let passwordMatched = await bcrypt.compare(password, hashedpass);
@@ -68,7 +72,8 @@ router.post("/login", async (req, res) => {
 
             res.status(200).send("Login success");
         } else {
-            res.status(400).send("Userid password does not match");
+            res.status(401).send("Userid password does not match");
+            console.log("Userid password does not match");
         }
     } catch (err) {
         console.log(err);
@@ -82,6 +87,7 @@ router.get("/verifyemail/:token", (req, res) => {
         console.log(user);
         try {
             let result = await doQuery(`UPDATE userlogin set activated=1 WHERE userid=${user}`);
+            res.redirect('http://localhost:3000');
             res.status(200).send('Success');
         } catch(err) {
             console.log(err);
