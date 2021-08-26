@@ -8,19 +8,15 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const mailOption = {
-    from: "RNS",
-    to: "pkb195929@gmail.com",
-    subject: "Hi its RMS..",
-    text: "randfom!!",
-};
 function sendEmail(mailOption) {
-    transporter.sendMail(mailOption, (err, data) => {
-        if (err) {
-            throw error;
-        } else {
-            console.log(data);
-        }
+    return new Promise((resolve, reject) => {
+        transporter.sendMail(mailOption, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
     });
 }
 
