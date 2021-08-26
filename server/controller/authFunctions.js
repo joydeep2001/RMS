@@ -82,7 +82,7 @@ async function handleVerification(err, user) {
 		let result = await doQuery(
 			`UPDATE userlogin set activated=1 WHERE userid=${user}`
 		);
-		res.redirect("http://localhost:3000");
+		res.redirect(process.env.LOGIN_PAGE_URL);
 		res.status(200).send("Success");
 	} catch (err) {
 		console.log(err);
